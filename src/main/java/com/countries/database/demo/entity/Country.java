@@ -1,4 +1,4 @@
-package com.countries.database.demo;
+package com.countries.database.demo.entity;
 
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

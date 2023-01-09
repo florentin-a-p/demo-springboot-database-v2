@@ -1,5 +1,15 @@
-package com.countries.database.demo;
+package com.countries.database.demo.controller;
 
+import com.countries.database.demo.entity.Country;
+import com.countries.database.demo.entity.ResponseMessage;
+import com.countries.database.demo.exception.EmptyTableException;
+import com.countries.database.demo.service.CountryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
@@ -19,11 +29,12 @@ import java.util.List;
 
 @RestController
 @Slf4j
+//@Api
 public class CountriesController {
   @Autowired(required = false)
   CountryService countryService;
 
-  //@Transactional(timeout = 1)
+  @Operation(summary = "Get all countries")
   @GetMapping(path="/getCountries")
   public ResponseEntity<List<Country>> getCountries() {
     log.info("[FLO] /getCountries is called");
@@ -81,6 +92,11 @@ public class CountriesController {
     }
   }
 
+  @Operation(summary = "Update existing country")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Updated the country",
+          content = { @Content(mediaType = "application/json",
+              schema = @Schema(implementation = Country.class)) })})
   @PutMapping(path="updateCountry")
   public ResponseEntity<Country> updateCountry(@RequestBody Country updatedCountry) {
     log.info("[FLO] /updateCountry is called");
@@ -91,8 +107,17 @@ public class CountriesController {
     }
   }
 
+  @Operation(summary = "Delete a country by its id")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Deleted the country",
+          content = { @Content(mediaType = "application/json",
+              schema = @Schema(implementation = Country.class)) }),
+      @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+          content = @Content),
+      @ApiResponse(responseCode = "404", description = "Country not found",
+          content = @Content) })
   @DeleteMapping(path="deleteCountry/{countryId}")
-  public ResponseEntity<ResponseMessage> deleteCountry(@PathVariable Integer countryId) {
+  public ResponseEntity<ResponseMessage> deleteCountry(@Parameter(description = "id of country to be deleted") @PathVariable Integer countryId) {
     log.info("[FLO] deleteCountry/{countryId} is called");
     try {
       return new ResponseEntity<>(countryService.deleteCountry(countryId), HttpStatus.OK);

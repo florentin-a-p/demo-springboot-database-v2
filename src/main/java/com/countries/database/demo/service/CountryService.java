@@ -1,5 +1,8 @@
-package com.countries.database.demo;
+package com.countries.database.demo.service;
 
+import com.countries.database.demo.entity.Country;
+import com.countries.database.demo.entity.ResponseMessage;
+import com.countries.database.demo.repository.CountryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

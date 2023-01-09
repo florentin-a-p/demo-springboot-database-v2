@@ -1,8 +1,5 @@
-package com.countries.database.demo;
+package com.countries.database.demo.entity;
 
-/**
- * // TODO Comment
- */
 public class ResponseMessage {
   private String msg;
 

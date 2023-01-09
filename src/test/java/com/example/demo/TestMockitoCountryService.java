@@ -1,9 +1,9 @@
 package com.example.demo;
 
-import com.countries.database.demo.Country;
-import com.countries.database.demo.CountryRepository;
-import com.countries.database.demo.CountryService;
-import com.countries.database.demo.ResponseMessage;
+import com.countries.database.demo.entity.Country;
+import com.countries.database.demo.repository.CountryRepository;
+import com.countries.database.demo.service.CountryService;
+import com.countries.database.demo.entity.ResponseMessage;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
