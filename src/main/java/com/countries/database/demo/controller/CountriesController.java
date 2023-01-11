@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
@@ -29,13 +31,13 @@ import java.util.List;
 
 @RestController
 @Slf4j
-//@Api
 public class CountriesController {
   @Autowired(required = false)
   CountryService countryService;
 
+  // start GET methods //
   @Operation(summary = "Get all countries")
-  @GetMapping(path="/getCountries")
+  @GetMapping(path="/v0/getCountries")
   public ResponseEntity<List<Country>> getCountries() {
     log.info("[FLO] /getCountries is called");
     try {
@@ -62,7 +64,7 @@ public class CountriesController {
     }
   }
 
-  @GetMapping(path="/getCountries/{countryId}")
+  @GetMapping(path="/v0/getCountries/{countryId}")
   public ResponseEntity<Country> getCountriesWithId(@PathVariable Integer countryId) {
     log.info("[FLO] /getCountries/{countryId} is called");
     try {
@@ -72,7 +74,7 @@ public class CountriesController {
     }
   }
 
-  @GetMapping(path="/getCountries/countryName")
+  @GetMapping(path="/v0/getCountries/countryName")
   public ResponseEntity<Country> getCountriesWithName(@RequestParam(value="name") String countryName) {
     log.info("[FLO] /getCountries/countryName is called");
     try {
@@ -82,6 +84,44 @@ public class CountriesController {
     }
   }
 
+  /**
+   * @param countryName     Filter for countryName if required
+   * @param capital          Filter for id if required
+   * @param page            number of the page returned
+   * @param size            number of entries in each page
+   * @return Page object with customers after filtering
+   */
+  @GetMapping(path="/v1/getCountries")
+  public Page<Country> getCountriesWithPageInterface(@RequestParam(defaultValue = "") String countryName,
+                                                     @RequestParam(defaultValue = "") String capital,
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "30") int size) {
+    log.info("[FLO] /v1/getCountries is called");
+    return countryService.getCountriesAsPageWithFiltering(countryName, capital, page, size);
+  }
+
+  /**
+   * @param countryName     Filter for countryName if required
+   * @param capital         Filter for id if required
+   * @param page            number of the page returned
+   * @param size            number of entries in each page
+   * @param sortList        list of columns to sort on
+   * @param sortOrder       sort order. Can be ASC or DESC
+   * @return Page object with customers after filtering
+   */
+  @GetMapping(path="/v2/getCountries")
+  public Page<Country> getCountriesWithPageInterfaceAndSorted(@RequestParam(defaultValue = "") String countryName,
+                                                              @RequestParam(defaultValue = "") String capital,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "30") int size,
+                                                              @RequestParam(defaultValue = "") List<String> sortList,
+                                                              @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
+    log.info("[FLO] /v2/getCountries is called");
+    return countryService.getCountriesAsPageWithFilteringAndSorting(countryName, capital, page, size, sortList, sortOrder.toString());
+  }
+  // end GET methods //
+
+  // start non GET methods //
   @PostMapping(path="addCountry")
   public ResponseEntity<Country> addCountry(@RequestBody Country addedCountry) {
     log.info("[FLO] /addCountry is called");
@@ -125,4 +165,5 @@ public class CountriesController {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
   }
+  // end non GET methods //
 }

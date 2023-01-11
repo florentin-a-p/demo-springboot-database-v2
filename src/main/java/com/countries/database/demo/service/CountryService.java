@@ -5,8 +5,13 @@ import com.countries.database.demo.entity.ResponseMessage;
 import com.countries.database.demo.repository.CountryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +37,16 @@ public class CountryService {
     return new Country(0,"NONE","NONE");
   }
 
+  public Page<Country> getCountriesAsPageWithFiltering (String countryName, String capital, int page, int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    return countryRepository.findByCountryIdLikeAndCountryNameLike(countryName, capital, pageable);
+  }
+
+  public Page<Country> getCountriesAsPageWithFilteringAndSorting(String countryName, String capital, int page, int size, List<String> sortList, String sortOrder) {
+    Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
+    return countryRepository.findByCountryIdLikeAndCountryNameLike(countryName, capital, pageable);
+  }
+
   public Country addCountry(Country addedCountry) {
     long size = countryRepository.count();
     log.info("[FLO] REPOSITORY SIZE IS: " + size);
@@ -52,5 +67,19 @@ public class CountryService {
   public ResponseMessage deleteCountry(Integer countryId) {
     countryRepository.deleteById(countryId);
     return new ResponseMessage("Country deleted");
+  }
+
+  private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
+    List<Sort.Order> sorts = new ArrayList<>();
+    Sort.Direction direction;
+    for (String sort : sortList) {
+      if (sortDirection != null) {
+        direction = Sort.Direction.fromString(sortDirection);
+      } else {
+        direction = Sort.Direction.DESC;
+      }
+      sorts.add(new Sort.Order(direction, sort));
+    }
+    return sorts;
   }
 }
