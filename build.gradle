@@ -2,6 +2,12 @@ plugins {
 	id 'org.springframework.boot' version '2.7.3'
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
+	id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.5" //jacoco version
+    reportsDir = file("$buildDir/reports/jacoco") //default directory where jacoco generates test reports
 }
 
 group = 'com.example'
@@ -33,4 +39,8 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+    finalizedBy jacocoTestReport
 }
