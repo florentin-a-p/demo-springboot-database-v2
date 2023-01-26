@@ -69,7 +69,7 @@ public class TestMockMvcCountriesController {
     given(countryService.getCountries()).willReturn(countryList);
 
     // When
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries"))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries"))
         .andExpect(status().isOk())
         .andDo(print())
         .andReturn();
@@ -88,7 +88,7 @@ public class TestMockMvcCountriesController {
     given(countryService.getCountries()).willAnswer( invocation -> { throw new InvalidDataAccessResourceUsageException(""); });
 
     // When
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries"))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries"))
         .andExpect(status().isGone())
         .andExpect(status().is4xxClientError())
         .andDo(print())
@@ -106,7 +106,7 @@ public class TestMockMvcCountriesController {
     given(countryService.getCountries()).willAnswer( invocation -> { throw new CannotCreateTransactionException(""); });
 
     // When
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries"))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries"))
         .andExpect(status().isExpectationFailed())
         .andExpect(status().is4xxClientError())
         .andDo(print())
@@ -125,7 +125,7 @@ public class TestMockMvcCountriesController {
     given(countryService.getCountries()).willReturn(countryList);
 
     // When
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries"))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries"))
         .andExpect(status().isNoContent())
         .andExpect(status().is2xxSuccessful())
         .andDo(print())
@@ -144,7 +144,7 @@ public class TestMockMvcCountriesController {
 
     // When
     //ResponseEntity<List<Country>> actualResponse = countriesController.getCountries();
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries"))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries"))
         .andExpect(status().isIAmATeapot())
         .andExpect(status().is4xxClientError())
         .andDo(print())
@@ -168,7 +168,7 @@ public class TestMockMvcCountriesController {
     String countryString = mapper.writeValueAsString(country);
 
     // When
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries/{countryId}",countryId))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries/{countryId}",countryId))
         .andExpect(status().isOk())
         .andDo(print())
         .andReturn();
@@ -190,7 +190,7 @@ public class TestMockMvcCountriesController {
 
     // When
     //ResponseEntity<Country> actualResponse = countriesController.getCountriesWithId(countryId);
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries/{countryId}",countryId))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries/{countryId}",countryId))
         .andExpect(status().isConflict())
         .andExpect(status().is4xxClientError())
         .andDo(print())
@@ -214,7 +214,7 @@ public class TestMockMvcCountriesController {
     String countryString = mapper.writeValueAsString(country);
 
     // When
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries/countryName").param("name",countryName))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries/countryName").param("name",countryName))
         .andExpect(status().isOk())
         .andDo(print())
         .andReturn();
@@ -235,7 +235,7 @@ public class TestMockMvcCountriesController {
     given(countryService.getCountriesWithName(countryName)).willAnswer( invocation -> { throw new Exception(); });
 
     // When
-    MvcResult actualResponse = this.mockMvc.perform(get("/getCountries/countryName").param("name",countryName))
+    MvcResult actualResponse = this.mockMvc.perform(get("/v0/getCountries/countryName").param("name",countryName))
         .andExpect(status().isConflict())
         .andExpect(status().is4xxClientError())
         .andDo(print())
