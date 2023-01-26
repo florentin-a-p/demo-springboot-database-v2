@@ -25,8 +25,13 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Run unit tests and give coverage
+      - name: Run unit tests using jacoco
         run: gradle test jacocoTestReport
+
+      - name: Run unit tests and give coverage using lcov
+        uses: romeovs/lcov-reporter-action@v0.2.16
+        with:
+          lcov-file: ./coverage/lcov.info
 #
 #      - name: Checkstyle
 #        run: gradle checkstyle
