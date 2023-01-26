@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, linux-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout code
@@ -31,8 +31,8 @@ jobs:
 #      - name: Checkstyle
 #        run: gradle checkstyle
 
-#      - name: Build jar
-#        run: gradle bootJar
+      - name: Build jar
+        run: gradle bootJar
 #
 #      - name: Build and Push Docker image
 #        run: |
