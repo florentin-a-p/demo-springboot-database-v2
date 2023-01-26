@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Country.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.countries.database.demo.entity</a> &gt; <span class="el_source">Country.java</span></div><h1>Country.java</h1><pre class="source lang-java linenums">package com.countries.database.demo.entity;
+
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name=&quot;springboot_country_tbl&quot;)
+<span class="fc" id="L13">@NoArgsConstructor</span>
+<span class="pc bpc" id="L14" title="13 of 24 branches missed.">@EqualsAndHashCode</span>
+public class Country {
+  @Id
+  @Column(name=&quot;id&quot;)
+  private int id;
+
+  @Column(name=&quot;countryname&quot;)
+  private String countryName;
+
+  @Column(name=&quot;countrycapital&quot;)
+  private String capital;
+
+<span class="fc" id="L26">  public Country(int id, String countryName, String capital) {</span>
+<span class="fc" id="L27">    this.id = id;</span>
+<span class="fc" id="L28">    this.countryName = countryName;</span>
+<span class="fc" id="L29">    this.capital = capital;</span>
+<span class="fc" id="L30">  }</span>
+
+  public int getId() {
+<span class="fc" id="L33">    return id;</span>
+  }
+
+  public void setId(int id) {
+<span class="fc" id="L37">    this.id = id;</span>
+<span class="fc" id="L38">  }</span>
+
+  public String getCountryName() {
+<span class="fc" id="L41">    return countryName;</span>
+  }
+
+  public void setCountryName(String countryName) {
+<span class="fc" id="L45">    this.countryName = countryName;</span>
+<span class="fc" id="L46">  }</span>
+
+  public String getCapital() {
+<span class="fc" id="L49">    return capital;</span>
+  }
+
+  public void setCapital(String capital) {
+<span class="fc" id="L53">    this.capital = capital;</span>
+<span class="fc" id="L54">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

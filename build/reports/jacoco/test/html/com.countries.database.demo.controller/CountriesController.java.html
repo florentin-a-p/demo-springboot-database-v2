@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CountriesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">com.countries.database.demo.controller</a> &gt; <span class="el_source">CountriesController.java</span></div><h1>CountriesController.java</h1><pre class="source lang-java linenums">package com.countries.database.demo.controller;
+
+import com.countries.database.demo.entity.Country;
+import com.countries.database.demo.entity.ResponseMessage;
+import com.countries.database.demo.exception.EmptyTableException;
+import com.countries.database.demo.service.CountryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.CannotCreateTransactionException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+<span class="fc" id="L33">@Slf4j</span>
+<span class="fc" id="L34">public class CountriesController {</span>
+  @Autowired(required = false)
+  CountryService countryService;
+
+  // start GET methods //
+  @Operation(summary = &quot;Get all countries&quot;)
+  @GetMapping(path=&quot;/v0/getCountries&quot;)
+  public ResponseEntity&lt;List&lt;Country&gt;&gt; getCountries() {
+<span class="fc" id="L42">    log.info(&quot;[FLO] /getCountries is called&quot;);</span>
+    try {
+<span class="fc" id="L44">      ResponseEntity&lt;List&lt;Country&gt;&gt; response = new ResponseEntity&lt;&gt;(countryService.getCountries(), HttpStatus.OK);</span>
+<span class="fc" id="L45">      log.info(&quot;[FLO] response length is: &quot;+response.getBody().size());</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">      if (response.getBody().size() &lt; 1) {</span>
+<span class="fc" id="L48">        throw new EmptyTableException(&quot;Data doesn't exist in table!!!&quot;);</span>
+      } else {
+<span class="fc" id="L50">        return response;</span>
+      }
+<span class="fc" id="L52">    } catch (InvalidDataAccessResourceUsageException e) { //db exists, tbl doesn't exist</span>
+<span class="fc" id="L53">      log.info(&quot;[FLO] exception message is: &quot;+e);</span>
+<span class="fc" id="L54">      return new ResponseEntity&lt;&gt;(HttpStatus.GONE);</span>
+<span class="fc" id="L55">    } catch (CannotCreateTransactionException e) { //during springboot run, db is deleted</span>
+<span class="fc" id="L56">      log.info(&quot;[FLO] exception message is: &quot;+e);</span>
+<span class="fc" id="L57">      return new ResponseEntity&lt;&gt;(HttpStatus.EXPECTATION_FAILED);</span>
+<span class="fc" id="L58">    } catch (EmptyTableException e) { //tbl exists but is empty</span>
+<span class="fc" id="L59">      log.info(&quot;[FLO] exception message is: &quot;+e);</span>
+<span class="fc" id="L60">      return new ResponseEntity&lt;&gt;(HttpStatus.NO_CONTENT);</span>
+<span class="fc" id="L61">    } catch (Exception e) { //any other exceptions</span>
+<span class="fc" id="L62">      log.info(&quot;[FLO] exception message is: &quot;+e);</span>
+<span class="fc" id="L63">      return new ResponseEntity&lt;&gt;(HttpStatus.I_AM_A_TEAPOT);</span>
+    }
+  }
+
+  @GetMapping(path=&quot;/v0/getCountries/{countryId}&quot;)
+  public ResponseEntity&lt;Country&gt; getCountriesWithId(@PathVariable Integer countryId) {
+<span class="fc" id="L69">    log.info(&quot;[FLO] /getCountries/{countryId} is called&quot;);</span>
+    try {
+<span class="fc" id="L71">      return new ResponseEntity&lt;&gt;(countryService.getCountriesWithId(countryId), HttpStatus.OK);</span>
+<span class="fc" id="L72">    } catch (Exception e) {</span>
+<span class="fc" id="L73">      return new ResponseEntity&lt;&gt;(HttpStatus.CONFLICT);</span>
+    }
+  }
+
+  @GetMapping(path=&quot;/v0/getCountries/countryName&quot;)
+  public ResponseEntity&lt;Country&gt; getCountriesWithName(@RequestParam(value=&quot;name&quot;) String countryName) {
+<span class="fc" id="L79">    log.info(&quot;[FLO] /getCountries/countryName is called&quot;);</span>
+    try {
+<span class="fc" id="L81">      return new ResponseEntity&lt;&gt;(countryService.getCountriesWithName(countryName), HttpStatus.OK);</span>
+<span class="fc" id="L82">    } catch (Exception e) {</span>
+<span class="fc" id="L83">      return new ResponseEntity&lt;&gt;(HttpStatus.CONFLICT);</span>
+    }
+  }
+
+  /**
+   * @param countryName     Filter for countryName if required
+   * @param capital          Filter for id if required
+   * @param page            number of the page returned
+   * @param size            number of entries in each page
+   * @return Page object with customers after filtering
+   */
+  @GetMapping(path=&quot;/v1/getCountries&quot;)
+  public Page&lt;Country&gt; getCountriesWithPageInterface(@RequestParam(defaultValue = &quot;&quot;) String countryName,
+                                                     @RequestParam(defaultValue = &quot;&quot;) String capital,
+                                                     @RequestParam(defaultValue = &quot;0&quot;) int page,
+                                                     @RequestParam(defaultValue = &quot;30&quot;) int size) {
+<span class="nc" id="L99">    log.info(&quot;[FLO] /v1/getCountries is called&quot;);</span>
+<span class="nc" id="L100">    return countryService.getCountriesAsPageWithFiltering(countryName, capital, page, size);</span>
+  }
+
+  /**
+   * @param countryName     Filter for countryName if required
+   * @param capital         Filter for id if required
+   * @param page            number of the page returned
+   * @param size            number of entries in each page
+   * @param sortList        list of columns to sort on
+   * @param sortOrder       sort order. Can be ASC or DESC
+   * @return Page object with customers after filtering
+   */
+  @GetMapping(path=&quot;/v2/getCountries&quot;)
+  public Page&lt;Country&gt; getCountriesWithPageInterfaceAndSorted(@RequestParam(defaultValue = &quot;&quot;) String countryName,
+                                                              @RequestParam(defaultValue = &quot;&quot;) String capital,
+                                                              @RequestParam(defaultValue = &quot;0&quot;) int page,
+                                                              @RequestParam(defaultValue = &quot;30&quot;) int size,
+                                                              @RequestParam(defaultValue = &quot;&quot;) List&lt;String&gt; sortList,
+                                                              @RequestParam(defaultValue = &quot;DESC&quot;) Sort.Direction sortOrder) {
+<span class="nc" id="L119">    log.info(&quot;[FLO] /v2/getCountries is called&quot;);</span>
+<span class="nc" id="L120">    return countryService.getCountriesAsPageWithFilteringAndSorting(countryName, capital, page, size, sortList, sortOrder.toString());</span>
+  }
+  // end GET methods //
+
+  // start non GET methods //
+  @PostMapping(path=&quot;addCountry&quot;)
+  public ResponseEntity&lt;Country&gt; addCountry(@RequestBody Country addedCountry) {
+<span class="fc" id="L127">    log.info(&quot;[FLO] /addCountry is called&quot;);</span>
+    try {
+<span class="fc" id="L129">      return new ResponseEntity&lt;&gt;(countryService.addCountry(addedCountry), HttpStatus.OK);</span>
+<span class="fc" id="L130">    } catch (Exception e) {</span>
+<span class="fc" id="L131">      return new ResponseEntity&lt;&gt;(HttpStatus.CONFLICT);</span>
+    }
+  }
+
+  @Operation(summary = &quot;Update existing country&quot;)
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Updated the country&quot;,
+          content = { @Content(mediaType = &quot;application/json&quot;,
+              schema = @Schema(implementation = Country.class)) })})
+  @PutMapping(path=&quot;updateCountry&quot;)
+  public ResponseEntity&lt;Country&gt; updateCountry(@RequestBody Country updatedCountry) {
+<span class="fc" id="L142">    log.info(&quot;[FLO] /updateCountry is called&quot;);</span>
+    try {
+<span class="fc" id="L144">      return new ResponseEntity&lt;&gt;(countryService.updateCountry(updatedCountry), HttpStatus.OK);</span>
+<span class="fc" id="L145">    } catch (Exception e) {</span>
+<span class="fc" id="L146">      return new ResponseEntity&lt;&gt;(HttpStatus.CONFLICT);</span>
+    }
+  }
+
+  @Operation(summary = &quot;Delete a country by its id&quot;)
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Deleted the country&quot;,
+          content = { @Content(mediaType = &quot;application/json&quot;,
+              schema = @Schema(implementation = Country.class)) }),
+      @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid id supplied&quot;,
+          content = @Content),
+      @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Country not found&quot;,
+          content = @Content) })
+  @DeleteMapping(path=&quot;deleteCountry/{countryId}&quot;)
+  public ResponseEntity&lt;ResponseMessage&gt; deleteCountry(@Parameter(description = &quot;id of country to be deleted&quot;) @PathVariable Integer countryId) {
+<span class="fc" id="L161">    log.info(&quot;[FLO] deleteCountry/{countryId} is called&quot;);</span>
+    try {
+<span class="fc" id="L163">      return new ResponseEntity&lt;&gt;(countryService.deleteCountry(countryId), HttpStatus.OK);</span>
+<span class="fc" id="L164">    } catch (Exception e) {</span>
+<span class="fc" id="L165">      return new ResponseEntity&lt;&gt;(HttpStatus.CONFLICT);</span>
+    }
+  }
+  // end non GET methods //
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
