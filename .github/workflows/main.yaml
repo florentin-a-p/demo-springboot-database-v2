@@ -31,7 +31,7 @@ jobs:
       - name: Run unit tests and give coverage using lcov
         uses: romeovs/lcov-reporter-action@v0.2.16
         with:
-          lcov-file: ./coverage/lcov.info
+          lcov-file: build/reports/jacoco/test/html/index.html
 #
 #      - name: Checkstyle
 #        run: gradle checkstyle
