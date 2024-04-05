@@ -7,7 +7,6 @@ plugins {
 
 jacoco {
     toolVersion = "0.8.5" //jacoco version
-    reportsDir = file("$buildDir/reports/jacoco") //default directory where jacoco generates test reports
 }
 
 group = 'com.example'
@@ -46,6 +45,7 @@ jacocoTestReport {
    reports {
        xml.enabled true
        csv.enabled true
+	   html.destination file("$buildDir/customJacocoReportDir") // Set the HTML report destination
    }
 }
 
